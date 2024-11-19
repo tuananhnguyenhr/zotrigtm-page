@@ -95,7 +95,7 @@
 
   <div class="search-bar">
     <input type="text" id="search-input" placeholder="Bạn tìm gì dợ ...">
-    <button onclick="searchAll()">Tìm kiếm toàn bộ</button>
+    <button onclick="searchAll()">Tìm kiếm</button>
     <select id="catalog-filter" onchange="filterByCatalog(this.value)">
       <option value="All">Tất cả</option>
       <option value="Vô tri">Vô tri</option>
@@ -103,8 +103,8 @@
       <!-- Thêm Catalog khác -->
     </select>
     <select id="sort-options" onchange="sortProducts(this.value)">
-      <option value="default">Mặc định</option>
-      <option value="hot">Hot</option>
+      <option value="default">Mới cập nhật</option>
+      <option value="hot">Mua nhiều</option>
     </select>
   </div>
 
@@ -112,8 +112,8 @@
   <div class="pagination" id="pagination"></div>
 
   <script>
-    const JSON_URL = "https://script.google.com/macros/s/AKfycbwyWb9riLyCe9cOldt7K0Fr5-b-WGQwtyARf2zUU62BZGQwTtAvhXAB0wn1QuugQK86LA/exec";
-    const ITEMS_PER_PAGE = 60;
+    const JSON_URL = "https://script.google.com/macros/s/AKfycbwIkq8Jiy_acYoPw_9lkU6pWfyuLrxEfCtY7XEli7hqdsVh_9giGlw05ALH2Wm1HoI9Ng/exec";
+    const ITEMS_PER_PAGE = 48;
     let currentPage = 1;
     let productList = [];
     let filteredList = [];
