@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-KT32CFRC');</script>
+  <!-- End Google Tag Manager -->
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    .gallery-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: space-around;
+    }
+    .product-card {
+      width: 23%;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 10px;
+      border-radius: 8px;
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+    .product-card img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .product-card button {
+      margin-top: 10px;
+      padding: 8px 12px;
+      border: none;
+      background-color: #dc3545;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .product-card button:hover {
+      background-color: #bd2130;
+    }
+    .product-card p {
+      margin: 10px 0;
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .pagination button {
+      margin: 0 5px;
+      padding: 8px 12px;
+      border: none;
+      background-color: #007bff;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .pagination button.active {
+      background-color: #0056b3;
+    }
+    .search-bar {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    #search-input {
+      width: 50%;
+      padding: 10px;
+      font-size: 16px;
+      margin-right: 10px;
+    }
+    .filter-options, .sort-options {
+      margin-left: 10px;
+      padding: 10px;
+    }
+    #catalog-filter, #sort-options {
+      padding: 10px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KT32CFRC"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <div class="search-bar">
+    <input type="text" id="search-input" placeholder="Bạn tìm gì dợ ...">
+    <button onclick="searchAll()">Tìm kiếm toàn bộ</button>
+    <select id="catalog-filter" onchange="filterByCatalog(this.value)">
+      <option value="All">Tất cả</option>
+      <option value="Vô tri">Vô tri</option>
+      <option value="Đồ nữ">Đồ nữ</option>
+      <!-- Thêm Catalog khác -->
+    </select>
+    <select id="sort-options" onchange="sortProducts(this.value)">
+      <option value="default">Mặc định</option>
+      <option value="hot">Hot</option>
+    </select>
+  </div>
+
+  <div class="gallery-container" id="gallery"></div>
+  <div class="pagination" id="pagination"></div>
+
+  <script>
+    const JSON_URL = "https://script.google.com/macros/s/AKfycbwyWb9riLyCe9cOldt7K0Fr5-b-WGQwtyARf2zUU62BZGQwTtAvhXAB0wn1QuugQK86LA/exec";
+    const ITEMS_PER_PAGE = 60;
+    let currentPage = 1;
+    let productList = [];
+    let filteredList = [];
+
+    async function fetchProducts() {
+      const response = await fetch(JSON_URL);
+      productList = await response.json();
+      filteredList = productList; // Ban đầu hiển thị tất cả sản phẩm
+      renderPage(currentPage);
+      renderPagination();
+    }
+
+    function renderPage(page) {
+      const gallery = document.getElementById("gallery");
+      gallery.innerHTML = "";
+      const startIndex = (page - 1) * ITEMS_PER_PAGE;
+      const endIndex = startIndex + ITEMS_PER_PAGE;
+      const pageItems = filteredList.slice(startIndex, endIndex);
+
+      pageItems.forEach(item => {
+        const productCard = document.createElement("div");
+        productCard.className = "product-card";
+        productCard.innerHTML = `
+          <a class="link-shopee" href="${item.productLink}" target="_blank">
+            <img class="anh-shopee" src="${item.imageLink}" alt="Product Image">
+          </a>
+          <p>${item.description}</p>
+          <p>${item.sold} đã bán</p>
+          <button onclick="reportError('${item.productLink}', '${item.imageLink}')">Báo lỗi</button>
+        `;
+        gallery.appendChild(productCard);
+      });
+    }
+
+    function renderPagination() {
+      const pagination = document.getElementById("pagination");
+      pagination.innerHTML = "";
+      const totalPages = Math.ceil(filteredList.length / ITEMS_PER_PAGE);
+
+      for (let i = 1; i <= totalPages; i++) {
+        const button = document.createElement("button");
+        button.textContent = i;
+        button.className = i === currentPage ? "active" : "";
+        button.addEventListener("click", () => {
+          currentPage = i;
+          renderPage(currentPage);
+          renderPagination();
+        });
+        pagination.appendChild(button);
+      }
+    }
+
+    function reportError(productLink, imageLink) {
+      fetch('https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec', {
+        method: 'POST',
+        body: JSON.stringify({ productLink, imageLink }),
+        headers: { 'Content-Type': 'application/json' }
+      }).then(response => {
+        if (response.ok) {
+          alert("Báo lỗi thành công!");
+        } else {
+          alert("Có lỗi xảy ra khi gửi báo cáo.");
+        }
+      });
+    }
+
+    function searchAll() {
+      const query = document.getElementById("search-input").value.trim();
+      if (!query) return;
+
+      filteredList = productList.filter(product =>
+        product.description.toLowerCase().includes(query.toLowerCase())
+      );
+      currentPage = 1;
+      renderPage(currentPage);
+      renderPagination();
+    }
+
+    function filterByCatalog(catalog) {
+      if (catalog === "All") {
+        filteredList = productList;
+      } else {
+        filteredList = productList.filter(product => product.catalog === catalog);
+      }
+      currentPage = 1;
+      renderPage(currentPage);
+      renderPagination();
+    }
+
+    function sortProducts(option) {
+      if (option === "hot") {
+        filteredList.sort((a, b) => b.sold - a.sold);
+      } else {
+        filteredList = [...productList];
+      }
+      currentPage = 1;
+      renderPage(currentPage);
+      renderPagination();
+    }
+
+    fetchProducts();
+  </script>
+</body>
+</html>
