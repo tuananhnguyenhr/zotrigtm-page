@@ -1,165 +1,281 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
-  
-
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Gallery</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+
+    select {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+.search-bar {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  gap: 10px;
+  align-items: center;
+}
+
+.search-bar div {
+  position: relative;
+  flex-grow: -1; /* Ô tìm kiếm chiếm tối đa không gian còn lại */
+  margin-left: 5%;
+  margin-right: 20px;
+}
+
+#search-input {
+  width: 100%; /* Đảm bảo ô tìm kiếm chiếm hết vùng của cha */
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#search-button {
+  height: 42px; /* Đảm bảo cùng chiều cao với ô input */
+  width: 42px;
+  background: url('https://img.icons8.com/ios-glyphs/30/search--v1.png') no-repeat center;
+  background-size: 20px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.suggestions {
+  position: absolute;
+  background: #fff;
+  border: 1px solid #ddd;
+  margin-top: 0%;
+  list-style-type: none;
+  padding: 0;
+  font-size: 16px;
+  z-index: 1000;
+  left: 0;
+  width: 100%; /* Cùng chiều rộng với ô tìm kiếm */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.suggestions li {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.suggestions li:hover {
+  background-color: #eee;
+}
+
     .gallery-container {
       display: flex;
       flex-wrap: wrap;
       gap: 20px;
       justify-content: space-around;
+      padding: 20px;
     }
+
     .product-card {
+      position: relative;
       width: 23%;
       text-align: center;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      padding: 10px;
       border-radius: 8px;
-      position: relative;
+      overflow: hidden;
+      background-color: #fff;
       transition: transform 0.3s ease;
     }
-    .product-card img {
+
+    .product-card:hover {
+      transform: scale(1.05);
+    }
+
+    .product-header {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      color: white;
+      padding: 10px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .product-name {
+      margin: 0;
+      font-size: 16px;
+      text-transform: capitalize;
+    }
+
+    .product-image {
       width: 100%;
       height: auto;
-      border-radius: 8px;
       cursor: pointer;
     }
-    .product-card button {
-      margin-top: 10px;
-      padding: 8px 12px;
-      border: none;
+
+    .product-footer {
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sold-count {
+      font-size: 14px;
+      color: #28a745;
+      font-weight: bold;
+    }
+
+    .report-error {
+      padding: 5px 10px;
       background-color: #dc3545;
       color: white;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .product-card button:hover {
-      background-color: #bd2130;
-    }
-    .product-card p {
-      margin: 10px 0;
-    }
-    .pagination {
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
-    }
-    .pagination button {
-      margin: 0 5px;
-      padding: 8px 12px;
       border: none;
-      background-color: #007bff;
-      color: white;
       border-radius: 4px;
       cursor: pointer;
+      font-size: 14px;
     }
-    .pagination button.active {
-      background-color: #0056b3;
-    }
-    .search-bar {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    #search-input {
-      width: 50%;
-      padding: 10px;
-      font-size: 16px;
-      margin-right: 10px;
-    }
-    .filter-options, .sort-options {
-      margin-left: 10px;
-      padding: 10px;
-    }
-    #catalog-filter, #sort-options {
-      padding: 10px;
-      font-size: 16px;
+
+    .report-error:hover {
+      background-color: #b21f2d;
     }
   </style>
 </head>
 <body>
-
-  <div class="search-bar">
-    <input type="text" id="search-input" placeholder="Bạn tìm gì dợ ...">
-    <button onclick="searchAll()">Tìm kiếm</button>
-    <select id="catalog-filter" onchange="filterByCatalog(this.value)">
-      <option value="All">Tất cả</option>
-      <option value="Vô tri">Vô tri</option>
-      <option value="Đồ nữ">Đồ nữ</option>
-      <!-- Thêm Catalog khác -->
-    </select>
-    <select id="sort-options" onchange="sortProducts(this.value)">
-      <option value="default">Mới cập nhật</option>
-      <option value="hot">Mua nhiều</option>
-    </select>
+<div class="search-bar">
+  <div style="position: relative; width: 40%;"> <!-- Bao bọc ô tìm kiếm và gợi ý -->
+    <input type="text" id="search-input" placeholder="Tìm kiếm sản phẩm...">
+    <ul class="suggestions" id="suggestions-list"></ul>
   </div>
+  <button id="search-button"></button>
+  <select id="catalog-filter">
+    <option value="all">Tất cả</option>
+    <option value="vô tri">Vô tri</option>
+    <option value="đồ nữ">Đồ nữ</option>
+    <option value="làm đẹp">Làm đẹp</option>
+  </select>
+  <select id="sort-filter">
+    <option value="default">Mới cập nhật</option>
+    <option value="hot">Hot</option>
+  </select>
+</div>
 
   <div class="gallery-container" id="gallery"></div>
-  <div class="pagination" id="pagination"></div>
 
   <script>
-    const JSON_URL = "https://script.google.com/macros/s/AKfycbwlmBk47Qjret8MAsi4HnSI0zo_hB0sXPu_NWh_H-1xifNaqQjvzoTLRGACGG9LpMcjiA/exec";
-    const ITEMS_PER_PAGE = 48;
-    let currentPage = 1;
+    const JSON_URL = "https://script.google.com/macros/s/AKfycbzdgEEJFu84KW8Zlv-qZX0dxc_m9W4CT9SMWyAwj5Ew_4qhTBPcoHYE5Po_JvA1MPKKeQ/exec";
     let productList = [];
-    let filteredList = [];
 
+    // Fetch products from Google Apps Script
     async function fetchProducts() {
-      const response = await fetch(JSON_URL);
-      productList = await response.json();
-      filteredList = productList; // Ban đầu hiển thị tất cả sản phẩm
-      renderPage(currentPage);
-      renderPagination();
+      try {
+        const response = await fetch(JSON_URL);
+        productList = await response.json();
+        renderPage(productList);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
     }
 
-    function renderPage(page) {
+    // Render product cards
+    function renderPage(products) {
       const gallery = document.getElementById("gallery");
       gallery.innerHTML = "";
-      const startIndex = (page - 1) * ITEMS_PER_PAGE;
-      const endIndex = startIndex + ITEMS_PER_PAGE;
-      const pageItems = filteredList.slice(startIndex, endIndex);
 
-      pageItems.forEach(item => {
+      products.forEach(item => {
         const productCard = document.createElement("div");
         productCard.className = "product-card";
         productCard.innerHTML = `
+          <div class="product-header">
+            <p class="product-name">${item.description}</p>
+          </div>
           <a class="link-shopee" href="${item.productLink}" target="_blank">
-            <img class="anh-shopee" src="${item.imageLink}" alt="Product Image">
+            <img class="product-image" src="${item.imageLink}" alt="Product Image">
           </a>
-          <p>${item.description}</p>
-          <p>${item.sold} đã bán</p>
-          <button onclick="reportError('${item.productLink}', '${item.imageLink}')">Báo lỗi</button>
+          <div class="product-footer">
+            <button class="report-error" onclick="reportError('${item.productLink}', '${item.imageLink}')">Báo lỗi</button>
+            <p class="sold-count">${item.sold} đã bán</p>
+          </div>
         `;
         gallery.appendChild(productCard);
       });
     }
 
-    function renderPagination() {
-      const pagination = document.getElementById("pagination");
-      pagination.innerHTML = "";
-      const totalPages = Math.ceil(filteredList.length / ITEMS_PER_PAGE);
+    // Gợi ý sản phẩm khi nhập vào ô tìm kiếm
+    function suggestProducts(query) {
+      const suggestionsList = document.getElementById("suggestions-list");
+      suggestionsList.innerHTML = "";
+      if (!query) return;
 
-      for (let i = 1; i <= totalPages; i++) {
-        const button = document.createElement("button");
-        button.textContent = i;
-        button.className = i === currentPage ? "active" : "";
-        button.addEventListener("click", () => {
-          currentPage = i;
-          renderPage(currentPage);
-          renderPagination();
-        });
-        pagination.appendChild(button);
-      }
+      const suggestions = productList.filter(product => 
+        product.description.toLowerCase().includes(query.toLowerCase())
+      );
+
+      suggestions.forEach(suggestion => {
+        const li = document.createElement("li");
+        li.textContent = suggestion.description;
+        li.onclick = () => {
+          document.getElementById("search-input").value = suggestion.description;
+          filterProducts(suggestion.description);
+          suggestionsList.innerHTML = "";
+        };
+        suggestionsList.appendChild(li);
+      });
     }
 
+    // Bộ lọc sản phẩm theo từ khóa
+    function filterProducts(query) {
+      const filteredProducts = productList.filter(product =>
+        product.description.toLowerCase().includes(query.toLowerCase())
+      );
+      renderPage(filteredProducts);
+    }
+
+    // Sự kiện nhập từ khóa
+    document.getElementById("search-input").addEventListener("input", (e) => {
+      suggestProducts(e.target.value.trim());
+    });
+
+    // Sự kiện nhấn Enter để tìm kiếm
+    document.getElementById("search-input").addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        filterProducts(e.target.value.trim());
+        document.getElementById("suggestions-list").innerHTML = ""; // Xóa gợi ý
+      }
+    });
+
+    // Bộ lọc danh mục
+    document.getElementById("catalog-filter").addEventListener("change", (e) => {
+      const filterValue = e.target.value;
+      const filteredProducts = filterValue === "all"
+        ? productList
+        : productList.filter(product => product.catalog && product.catalog.toLowerCase() === filterValue);
+      renderPage(filteredProducts);
+    });
+
+    // Sắp xếp sản phẩm
+    document.getElementById("sort-filter").addEventListener("change", (e) => {
+      const sortValue = e.target.value;
+      const sortedProducts = [...productList];
+      if (sortValue === "hot") {
+        sortedProducts.sort((a, b) => parseInt(b.sold) - parseInt(a.sold)); // Số lượng bán cao
+      }
+      renderPage(sortedProducts);
+    });
+
     function reportError(productLink, imageLink) {
-      fetch('https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec', {
+      fetch('https://script.google.com/macros/s/AKfycbzdgEEJFu84KW8Zlv-qZX0dxc_m9W4CT9SMWyAwj5Ew_4qhTBPcoHYE5Po_JvA1MPKKeQ/exec', {
         method: 'POST',
-        body: JSON.stringify({ productLink, imageLink }),
+        body: JSON.stringify({ productLink, imageLink, action: "reportError" }),
         headers: { 'Content-Type': 'application/json' }
       }).then(response => {
         if (response.ok) {
@@ -170,41 +286,6 @@
       });
     }
 
-    function searchAll() {
-      const query = document.getElementById("search-input").value.trim();
-      if (!query) return;
-
-      filteredList = productList.filter(product =>
-        product.description.toLowerCase().includes(query.toLowerCase())
-      );
-      currentPage = 1;
-      renderPage(currentPage);
-      renderPagination();
-    }
-
-    function filterByCatalog(catalog) {
-      if (catalog === "All") {
-        filteredList = productList;
-      } else {
-        filteredList = productList.filter(product => product.catalog === catalog);
-      }
-      currentPage = 1;
-      renderPage(currentPage);
-      renderPagination();
-    }
-
-    function sortProducts(option) {
-      if (option === "hot") {
-        filteredList.sort((a, b) => b.sold - a.sold);
-      } else {
-        filteredList = [...productList];
-      }
-      currentPage = 1;
-      renderPage(currentPage);
-      renderPagination();
-    }
-
     fetchProducts();
   </script>
-</body>
-</html>
+</
