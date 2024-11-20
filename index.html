@@ -104,7 +104,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="pagination" id="pagination"></div>
 
   <script>
-    const JSON_URL = "https://script.google.com/macros/s/AKfycbwlmBk47Qjret8MAsi4HnSI0zo_hB0sXPu_NWh_H-1xifNaqQjvzoTLRGACGG9LpMcjiA/exec";
+    const JSON_URL = "https://script.google.com/macros/s/AKfycbzdgEEJFu84KW8Zlv-qZX0dxc_m9W4CT9SMWyAwj5Ew_4qhTBPcoHYE5Po_JvA1MPKKeQ/exec";
     const ITEMS_PER_PAGE = 48;
     let currentPage = 1;
     let productList = [];
@@ -137,7 +137,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                  'value': 1
             });">
           </a>
-          <p>${item.description}</p>
+          <p>${item.description} (${item.sold} đã bán)</p>
         `;
         gallery.appendChild(productCard);
       });
