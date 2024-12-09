@@ -129,13 +129,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         const productCard = document.createElement("div");
         productCard.className = "product-card";
         productCard.innerHTML = `
-          <a class="link-shopee" href="${item.productLink}" target="_blank">
-            <img class="anh-shopee" src="${item.imageLink}" alt="Product Image"
-                 onclick="gtag('event', 'click', {
-                 'event_category': 'Image Clicks',
-                 'event_label': 'Shopee Link',
-                 'value': 1
-            });">
+          <a class="link-shopee" href="${item.productLink}" target="_blank"
+          onclick="ga('send', 'event', 'Image Clicks', 'click', '${item.productName}', 1);">
+            <img class="anh-shopee" src="${item.imageLink}" alt="Product Image">
           </a>
           <p>${item.description}</p>
           <p style="color: red">(${item.sold} đã bán)</p>
