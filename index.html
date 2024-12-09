@@ -130,7 +130,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         productCard.className = "product-card";
         productCard.innerHTML = `
           <a class="link-shopee" href="${item.productLink}" target="_blank"
-          onclick="ga('send', 'event', 'Image Clicks', 'click', '${item.productName}', 1);">
+          onclick="ga('send', 'event', 'Image Clicks', 'click', '${item.productName}', 1); 
+            gtag('event', 'click_image', {
+                'event_category': 'Image Clicks',
+                'event_label': '${item.productName}',
+                'value': 1
+            });">
             <img class="anh-shopee" src="${item.imageLink}" alt="Product Image">
           </a>
           <p>${item.description}</p>
