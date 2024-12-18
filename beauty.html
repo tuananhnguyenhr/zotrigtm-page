@@ -104,7 +104,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="pagination" id="pagination"></div>
 
   <script>
-    const JSON_URL = "https://script.google.com/macros/s/AKfycbxamlIuMf46lyxtQ1jILUlJQSFbXbbCBKF0M4U6-mVKhiewwKkTZqiOoagrUfU-QouT/exec?source=beauty";
+    const JSON_URL = "https://script.google.com/macros/s/AKfycbyf-Qq33_oyBZgf_n7MhVU1v8-I0vLzjJkmn3oudtFBpkODMZOt6VQKHean3h-uRaI8QA/exec?source=beauty";
     const ITEMS_PER_PAGE = 48;
     let currentPage = 1;
     let productList = [];
@@ -138,7 +138,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             });">
           </a>
           <p>${item.description}</p>
-          <p style="color: red">(${item.sold.toString()} đã bán)</p>
+          <p style="color: red">(${item.sold} đã bán)</p>
         `;
         gallery.appendChild(productCard);
       });
